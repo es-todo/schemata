@@ -5,13 +5,14 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.js",
+  "lib": "./dist",
   "scripts": {
+    "install": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@types/node": "^22.13.5",
-    "@typescript-eslint/typescript-estree": "^8.24.1",
-    "prettier": "^3.5.2"
+    "prettier": "^3.5.2",
+    "typescript": "^5.7.3"
   }
 }

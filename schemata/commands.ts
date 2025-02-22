@@ -1,4 +1,4 @@
-import { obj, type schemata, str } from "../src/types.ts";
+import { obj, type schemata, str } from "../src/types";
 
 export const command_type: schemata = {
   register: obj({

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { command_type } from "../schemata/commands.ts";
-import { event_type } from "../schemata/events.ts";
-import { object_type } from "../schemata/objects.ts";
-import { type object_schemata, type schemata } from "../src/types.ts";
+import { command_type } from "../schemata/commands";
+import { event_type } from "../schemata/events";
+import { object_type } from "../schemata/objects";
+import { type object_schemata, type schemata } from "../src/types";
 import fs from "node:fs/promises";
 import prettier from "prettier";
 
