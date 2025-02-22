@@ -6,6 +6,11 @@
   "author": "",
   "type": "module",
   "files": "./dist",
+  "exports": {
+    "./generated/command_type": "./dist/generated/object_type.js",
+    "./generated/event_type": "./dist/generated/event_type.js.js",
+    "./generated/object_type": "./dist/generated/object_type.js"
+  },
   "scripts": {
     "install": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
