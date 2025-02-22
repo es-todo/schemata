@@ -6,4 +6,8 @@ export const command_type: schemata = {
     email: str,
     salted_hash: str,
   }),
+  change_email: obj({
+    user_id: str,
+    new_email: str,
+  }),
 };
