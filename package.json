@@ -5,7 +5,7 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "dist": "./dist",
+  "files": "./dist",
   "scripts": {
     "install": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
