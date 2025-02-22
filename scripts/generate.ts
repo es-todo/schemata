@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { command_type } from "../schemata/commands";
-import { event_type } from "../schemata/events";
-import { object_type } from "../schemata/objects";
-import { type object_schemata, type schemata } from "../src/types";
+import { command_type } from "../schemata/commands.ts";
+import { event_type } from "../schemata/events.ts";
+import { object_type } from "../schemata/objects.ts";
+import { type object_schemata, type schemata } from "../src/types.ts";
 import fs from "node:fs/promises";
 import prettier from "prettier";
 
@@ -99,8 +99,7 @@ function generate_checker_string(name: string, schemata: schemata): string {
     }
   }
   function generate_case(name: string, schemata: object_schemata): string {
-    return `
-      case "${name}":
+    return `case "${name}":
         return { type: "${name}", value: ${gen_checker(schemata)}(x.value) };`;
   }
   const f = `

@@ -12,6 +12,7 @@
     "./generated/object_type": "./dist/generated/object_type.js"
   },
   "scripts": {
+    "generate": "./scripts/generate.ts",
     "install": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

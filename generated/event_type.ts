@@ -1,6 +1,6 @@
 export type event_type = {
   type: "user_registered";
-  value: { email: string; salted_hash: string };
+  value: { user_id: string; email: string; salted_hash: string };
 };
 
 function parse_1(x: any) {
@@ -14,6 +14,7 @@ function parse_1(x: any) {
 function parse_0(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
+      user_id: parse_1(x.user_id),
       email: parse_1(x.email),
       salted_hash: parse_1(x.salted_hash),
     };
