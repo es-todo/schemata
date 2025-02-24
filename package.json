@@ -8,7 +8,7 @@
   "files": "./dist",
   "exports": {
     "./generated/command_type": "./dist/generated/object_type.js",
-    "./generated/event_type": "./dist/generated/event_type.js.js",
+    "./generated/event_type": "./dist/generated/event_type.js",
     "./generated/object_type": "./dist/generated/object_type.js"
   },
   "scripts": {
