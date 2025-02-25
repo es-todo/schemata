@@ -6,4 +6,8 @@ export const event_type: schemata = {
     email: str,
     salted_hash: str,
   }),
+  user_email_changed: obj({
+    user_id: str,
+    new_email: str,
+  }),
 };
