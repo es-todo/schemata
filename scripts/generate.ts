@@ -28,7 +28,7 @@ function generate_type_string(name: string, schemata: schemata): string {
     return Object.entries(schemata)
       .map(
         ([name, schemata]) =>
-          `{ type: "${name}", value: ${generate_type(schemata)} }`
+          `{ type: "${name}", data: ${generate_type(schemata)} }`
       )
       .join(" | ");
   }
@@ -100,7 +100,7 @@ function generate_checker_string(name: string, schemata: schemata): string {
   }
   function generate_case(name: string, schemata: object_schemata): string {
     return `case "${name}":
-        return { type: "${name}", value: ${gen_checker(schemata)}(x.value) };`;
+        return { type: "${name}", data: ${gen_checker(schemata)}(x.data) };`;
   }
   const f = `
     export function parse_${name}(x: any): ${name}  {

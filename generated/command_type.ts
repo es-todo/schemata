@@ -1,9 +1,9 @@
 export type command_type =
   | {
       type: "register";
-      value: { user_id: string; email: string; salted_hash: string };
+      data: { user_id: string; email: string; salted_hash: string };
     }
-  | { type: "change_email"; value: { user_id: string; new_email: string } };
+  | { type: "change_email"; data: { user_id: string; new_email: string } };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -39,9 +39,9 @@ function parse_2(x: any) {
 export function parse_command_type(x: any): command_type {
   switch (x.type) {
     case "register":
-      return { type: "register", value: parse_0(x.value) };
+      return { type: "register", data: parse_0(x.data) };
     case "change_email":
-      return { type: "change_email", value: parse_2(x.value) };
+      return { type: "change_email", data: parse_2(x.data) };
     default:
       throw new Error("not a command_type:" + x);
   }

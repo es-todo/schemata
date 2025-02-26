@@ -1,6 +1,6 @@
 export type object_type =
-  | { type: "email"; value: { user_id: string } }
-  | { type: "user"; value: { email: string; salted_hash: string } };
+  | { type: "email"; data: { user_id: string } }
+  | { type: "user"; data: { email: string; salted_hash: string } };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -34,9 +34,9 @@ function parse_2(x: any) {
 export function parse_object_type(x: any): object_type {
   switch (x.type) {
     case "email":
-      return { type: "email", value: parse_0(x.value) };
+      return { type: "email", data: parse_0(x.data) };
     case "user":
-      return { type: "user", value: parse_2(x.value) };
+      return { type: "user", data: parse_2(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }

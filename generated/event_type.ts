@@ -1,11 +1,11 @@
 export type event_type =
   | {
       type: "user_registered";
-      value: { user_id: string; email: string; salted_hash: string };
+      data: { user_id: string; email: string; salted_hash: string };
     }
   | {
       type: "user_email_changed";
-      value: { user_id: string; new_email: string };
+      data: { user_id: string; new_email: string };
     };
 
 function parse_1(x: any) {
@@ -42,9 +42,9 @@ function parse_2(x: any) {
 export function parse_event_type(x: any): event_type {
   switch (x.type) {
     case "user_registered":
-      return { type: "user_registered", value: parse_0(x.value) };
+      return { type: "user_registered", data: parse_0(x.data) };
     case "user_email_changed":
-      return { type: "user_email_changed", value: parse_2(x.value) };
+      return { type: "user_email_changed", data: parse_2(x.data) };
     default:
       throw new Error("not a event_type:" + x);
   }
