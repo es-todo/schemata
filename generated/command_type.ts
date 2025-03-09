@@ -3,7 +3,8 @@ export type command_type =
       type: "register";
       data: { user_id: string; email: string; salted_hash: string };
     }
-  | { type: "change_email"; data: { user_id: string; new_email: string } };
+  | { type: "change_email"; data: { user_id: string; new_email: string } }
+  | { type: "ping"; data: {} };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -36,12 +37,22 @@ function parse_2(x: any) {
   }
 }
 
+function parse_3(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {};
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
 export function parse_command_type(x: any): command_type {
   switch (x.type) {
     case "register":
       return { type: "register", data: parse_0(x.data) };
     case "change_email":
       return { type: "change_email", data: parse_2(x.data) };
+    case "ping":
+      return { type: "ping", data: parse_3(x.data) };
     default:
       throw new Error("not a command_type:" + x);
   }

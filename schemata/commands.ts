@@ -10,4 +10,5 @@ export const command_type: schemata = {
     user_id: str,
     new_email: str,
   }),
+  ping: obj({}),
 };

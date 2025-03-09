@@ -3,10 +3,8 @@ export type event_type =
       type: "user_registered";
       data: { user_id: string; email: string; salted_hash: string };
     }
-  | {
-      type: "user_email_changed";
-      data: { user_id: string; new_email: string };
-    };
+  | { type: "user_email_changed"; data: { user_id: string; new_email: string } }
+  | { type: "ping"; data: {} };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -39,12 +37,22 @@ function parse_2(x: any) {
   }
 }
 
+function parse_3(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {};
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
 export function parse_event_type(x: any): event_type {
   switch (x.type) {
     case "user_registered":
       return { type: "user_registered", data: parse_0(x.data) };
     case "user_email_changed":
       return { type: "user_email_changed", data: parse_2(x.data) };
+    case "ping":
+      return { type: "ping", data: parse_3(x.data) };
     default:
       throw new Error("not a event_type:" + x);
   }
