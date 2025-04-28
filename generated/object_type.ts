@@ -1,6 +1,7 @@
 export type object_type =
   | { type: "email"; data: { user_id: string } }
-  | { type: "user"; data: { email: string; salted_hash: string } };
+  | { type: "user"; data: { email: string; salted_hash: string } }
+  | { type: "counter"; data: { count: number } };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -31,12 +32,32 @@ function parse_2(x: any) {
   }
 }
 
+function parse_4(x: any) {
+  if (typeof x === "number") {
+    return x;
+  } else {
+    throw new Error("not a number:" + x);
+  }
+}
+
+function parse_3(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      count: parse_4(x.count),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
 export function parse_object_type(x: any): object_type {
   switch (x.type) {
     case "email":
       return { type: "email", data: parse_0(x.data) };
     case "user":
       return { type: "user", data: parse_2(x.data) };
+    case "counter":
+      return { type: "counter", data: parse_3(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }

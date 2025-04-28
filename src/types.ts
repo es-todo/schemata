@@ -12,3 +12,5 @@ export const obj: (
 ) => object_schemata = (entries) => ({ type: "object", entries });
 
 export const str: object_schemata = { type: "string" };
+
+export const num: object_schemata = { type: "number" };
