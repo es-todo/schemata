@@ -4,7 +4,7 @@ export const command_type: schemata = {
   register: obj({
     user_id: str,
     email: str,
-    salted_hash: str,
+    password: str,
   }),
   change_email: obj({
     user_id: str,

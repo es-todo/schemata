@@ -1,7 +1,7 @@
 export type command_type =
   | {
       type: "register";
-      data: { user_id: string; email: string; salted_hash: string };
+      data: { user_id: string; email: string; password: string };
     }
   | { type: "change_email"; data: { user_id: string; new_email: string } }
   | { type: "ping"; data: {} };
@@ -19,7 +19,7 @@ function parse_0(x: any) {
     return {
       user_id: parse_1(x.user_id),
       email: parse_1(x.email),
-      salted_hash: parse_1(x.salted_hash),
+      password: parse_1(x.password),
     };
   } else {
     throw new Error("not a command_type: " + x);
