@@ -6,7 +6,9 @@ export const object_type: schemata = {
   }),
   user: obj({
     email: str,
-    salted_hash: str,
+  }),
+  credentials: obj({
+    password: str,
   }),
   counter: obj({
     count: num,

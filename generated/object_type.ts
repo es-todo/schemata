@@ -1,6 +1,7 @@
 export type object_type =
   | { type: "email"; data: { user_id: string } }
-  | { type: "user"; data: { email: string; salted_hash: string } }
+  | { type: "user"; data: { email: string } }
+  | { type: "credentials"; data: { password: string } }
   | { type: "counter"; data: { count: number } };
 
 function parse_1(x: any) {
@@ -25,14 +26,23 @@ function parse_2(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       email: parse_1(x.email),
-      salted_hash: parse_1(x.salted_hash),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_4(x: any) {
+function parse_3(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      password: parse_1(x.password),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_5(x: any) {
   if (typeof x === "number") {
     return x;
   } else {
@@ -40,10 +50,10 @@ function parse_4(x: any) {
   }
 }
 
-function parse_3(x: any) {
+function parse_4(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      count: parse_4(x.count),
+      count: parse_5(x.count),
     };
   } else {
     throw new Error("not a object_type: " + x);
@@ -56,8 +66,10 @@ export function parse_object_type(x: any): object_type {
       return { type: "email", data: parse_0(x.data) };
     case "user":
       return { type: "user", data: parse_2(x.data) };
+    case "credentials":
+      return { type: "credentials", data: parse_3(x.data) };
     case "counter":
-      return { type: "counter", data: parse_3(x.data) };
+      return { type: "counter", data: parse_4(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }
