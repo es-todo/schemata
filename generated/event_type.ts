@@ -4,7 +4,12 @@ export type event_type =
       data: { user_id: string; email: string; password: string };
     }
   | { type: "user_email_changed"; data: { user_id: string; new_email: string } }
-  | { type: "ping"; data: {} };
+  | { type: "ping"; data: {} }
+  | {
+      type: "board_created";
+      data: { board_id: string; user_id: string; board_name: string };
+    }
+  | { type: "board_renamed"; data: { board_id: string; board_name: string } };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -45,6 +50,29 @@ function parse_3(x: any) {
   }
 }
 
+function parse_4(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      board_id: parse_1(x.board_id),
+      user_id: parse_1(x.user_id),
+      board_name: parse_1(x.board_name),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_5(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      board_id: parse_1(x.board_id),
+      board_name: parse_1(x.board_name),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
 export function parse_event_type(x: any): event_type {
   switch (x.type) {
     case "user_registered":
@@ -53,6 +81,10 @@ export function parse_event_type(x: any): event_type {
       return { type: "user_email_changed", data: parse_2(x.data) };
     case "ping":
       return { type: "ping", data: parse_3(x.data) };
+    case "board_created":
+      return { type: "board_created", data: parse_4(x.data) };
+    case "board_renamed":
+      return { type: "board_renamed", data: parse_5(x.data) };
     default:
       throw new Error("not a event_type:" + x);
   }

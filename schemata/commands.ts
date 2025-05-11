@@ -11,4 +11,12 @@ export const command_type: schemata = {
     new_email: str,
   }),
   ping: obj({}),
+  create_board: obj({
+    board_id: str,
+    board_name: str,
+  }),
+  rename_board: obj({
+    board_id: str,
+    board_name: str,
+  }),
 };

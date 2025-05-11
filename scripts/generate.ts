@@ -83,6 +83,27 @@ function generate_checker_string(name: string, schemata: schemata): string {
       return fname;
     }
   }
+  function gen_array_checker(element: object_schemata) {
+    const type = JSON.stringify([element]);
+    const x = checkers[type];
+    if (x) {
+      return x.name;
+    } else {
+      const i = counter++;
+      const fname = `parse_${i}`;
+      const code = `
+        function ${fname}(x: any) {
+          if (Array.isArray(x)) {
+            return x.map(${gen_checker(element)});
+          } else {
+            throw new Error("not an array: " + x);
+          }
+        }
+      `;
+      checkers[type] = { name: fname, code };
+      return fname;
+    }
+  }
 
   function gen_checker(schemata: object_schemata): string {
     switch (schemata.type) {
@@ -94,8 +115,11 @@ function generate_checker_string(name: string, schemata: schemata): string {
         return gen_basic_checker("boolean");
       case "object":
         return gen_object_checker(schemata.entries);
+      case "array":
+        return gen_array_checker(schemata.element);
       default:
-        throw new Error(`not yet for ${schemata.type}`);
+        const invalid: never = schemata;
+        throw invalid;
     }
   }
   function generate_case(name: string, schemata: object_schemata): string {

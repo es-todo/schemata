@@ -14,3 +14,7 @@ export const obj: (
 export const str: object_schemata = { type: "string" };
 
 export const num: object_schemata = { type: "number" };
+
+export const arr: (element: object_schemata) => object_schemata = (
+  element
+) => ({ type: "array", element });
