@@ -13,7 +13,9 @@ export const object_type: schemata = {
   counter: obj({
     count: num,
   }),
-  user_boards: arr(str),
+  user_boards: obj({
+    list: arr(str),
+  }),
   board: obj({
     user_id: str,
     name: str,

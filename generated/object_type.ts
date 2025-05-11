@@ -3,7 +3,7 @@ export type object_type =
   | { type: "user"; data: { email: string } }
   | { type: "credentials"; data: { password: string } }
   | { type: "counter"; data: { count: number } }
-  | { type: "user_boards"; data: Array<string> }
+  | { type: "user_boards"; data: { list: Array<string> } }
   | { type: "board"; data: { user_id: string; name: string } };
 
 function parse_1(x: any) {
@@ -62,7 +62,7 @@ function parse_4(x: any) {
   }
 }
 
-function parse_6(x: any) {
+function parse_7(x: any) {
   if (Array.isArray(x)) {
     return x.map(parse_1);
   } else {
@@ -70,7 +70,17 @@ function parse_6(x: any) {
   }
 }
 
-function parse_7(x: any) {
+function parse_6(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      list: parse_7(x.list),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_8(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_1(x.user_id),
@@ -94,7 +104,7 @@ export function parse_object_type(x: any): object_type {
     case "user_boards":
       return { type: "user_boards", data: parse_6(x.data) };
     case "board":
-      return { type: "board", data: parse_7(x.data) };
+      return { type: "board", data: parse_8(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }
