@@ -21,7 +21,6 @@ export const object_type: schemata = {
     name: str,
   }),
   users_ll: obj({
-    user_id: str,
     next: nullable(str),
   }),
 };

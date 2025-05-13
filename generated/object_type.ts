@@ -5,7 +5,7 @@ export type object_type =
   | { type: "counter"; data: { count: number } }
   | { type: "user_boards"; data: { list: Array<string> } }
   | { type: "board"; data: { user_id: string; name: string } }
-  | { type: "users_ll"; data: { user_id: string; next: string | null } };
+  | { type: "users_ll"; data: { next: string | null } };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -100,7 +100,6 @@ function parse_10(x: any) {
 function parse_9(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      user_id: parse_1(x.user_id),
       next: parse_10(x.next),
     };
   } else {
