@@ -2,6 +2,7 @@ export type object_schemata =
   | { type: "number" }
   | { type: "string" }
   | { type: "boolean" }
+  | { type: "nullable"; object: object_schemata }
   | { type: "array"; element: object_schemata }
   | { type: "object"; entries: Record<string, object_schemata> };
 
@@ -18,3 +19,7 @@ export const num: object_schemata = { type: "number" };
 export const arr: (element: object_schemata) => object_schemata = (
   element
 ) => ({ type: "array", element });
+
+export const nullable: (object: object_schemata) => object_schemata = (
+  object
+) => ({ type: "nullable", object });

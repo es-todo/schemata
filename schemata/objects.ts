@@ -1,4 +1,4 @@
-import { obj, type schemata, str, num, arr } from "../src/types.ts";
+import { obj, type schemata, str, num, arr, nullable } from "../src/types.ts";
 
 export const object_type: schemata = {
   email: obj({
@@ -19,5 +19,9 @@ export const object_type: schemata = {
   board: obj({
     user_id: str,
     name: str,
+  }),
+  users_ll: obj({
+    user_id: str,
+    next: nullable(str),
   }),
 };

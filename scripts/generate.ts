@@ -22,6 +22,11 @@ function generate_type_string(name: string, schemata: schemata): string {
         return `{ ${Object.entries(schemata.entries)
           .map(([key, val]) => `${key}: ${generate_type(val)}`)
           .join(", ")} }`;
+      case "nullable":
+        return `(${generate_type(schemata.object)}) | null`;
+      default:
+        const invalid: never = schemata;
+        throw invalid;
     }
   }
   function generate_schemata(schemata: schemata): string {
@@ -38,6 +43,7 @@ function generate_type_string(name: string, schemata: schemata): string {
 function generate_checker_string(name: string, schemata: schemata): string {
   const checkers: Record<string, { name: string; code: string }> = {};
   let counter = 0;
+
   function gen_basic_checker(type: string) {
     const x = checkers[type];
     if (x) {
@@ -58,6 +64,7 @@ function generate_checker_string(name: string, schemata: schemata): string {
       return fname;
     }
   }
+
   function gen_object_checker(entries: Record<string, object_schemata>) {
     const type = JSON.stringify(entries);
     const x = checkers[type];
@@ -83,6 +90,7 @@ function generate_checker_string(name: string, schemata: schemata): string {
       return fname;
     }
   }
+
   function gen_array_checker(element: object_schemata) {
     const type = JSON.stringify([element]);
     const x = checkers[type];
@@ -105,6 +113,25 @@ function generate_checker_string(name: string, schemata: schemata): string {
     }
   }
 
+  function gen_nullable_checker(object: object_schemata) {
+    const type = `nullable(${JSON.stringify(object)})`;
+    const x = checkers[type];
+    if (x) {
+      return x.name;
+    } else {
+      const i = counter++;
+      const fname = `parse_${i}`;
+      const code = `
+        function ${fname}(x: any) {
+          if (x === null) return null;
+          return ${gen_checker(object)}(x);
+        }
+      `;
+      checkers[type] = { name: fname, code };
+      return fname;
+    }
+  }
+
   function gen_checker(schemata: object_schemata): string {
     switch (schemata.type) {
       case "string":
@@ -117,15 +144,19 @@ function generate_checker_string(name: string, schemata: schemata): string {
         return gen_object_checker(schemata.entries);
       case "array":
         return gen_array_checker(schemata.element);
+      case "nullable":
+        return gen_nullable_checker(schemata.object);
       default:
         const invalid: never = schemata;
         throw invalid;
     }
   }
+
   function generate_case(name: string, schemata: object_schemata): string {
     return `case "${name}":
         return { type: "${name}", data: ${gen_checker(schemata)}(x.data) };`;
   }
+
   const f = `
     export function parse_${name}(x: any): ${name}  {
       switch (x.type) {
