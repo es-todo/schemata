@@ -6,6 +6,9 @@ export const command_type: schemata = {
     email: str,
     password: str,
   }),
+  change_user_name: obj({
+    new_name: str,
+  }),
   change_email: obj({
     user_id: str,
     new_email: str,

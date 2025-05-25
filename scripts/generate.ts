@@ -24,6 +24,8 @@ function generate_type_string(name: string, schemata: schemata): string {
           .join(", ")} }`;
       case "nullable":
         return `(${generate_type(schemata.object)}) | null`;
+      case "optional":
+        return `(${generate_type(schemata.object)}) | undefined`;
       default:
         const invalid: never = schemata;
         throw invalid;
@@ -132,6 +134,25 @@ function generate_checker_string(name: string, schemata: schemata): string {
     }
   }
 
+  function gen_optional_checker(object: object_schemata) {
+    const type = `optional(${JSON.stringify(object)})`;
+    const x = checkers[type];
+    if (x) {
+      return x.name;
+    } else {
+      const i = counter++;
+      const fname = `parse_${i}`;
+      const code = `
+        function ${fname}(x: any) {
+          if (x === undefined) return undefined;
+          return ${gen_checker(object)}(x);
+        }
+      `;
+      checkers[type] = { name: fname, code };
+      return fname;
+    }
+  }
+
   function gen_checker(schemata: object_schemata): string {
     switch (schemata.type) {
       case "string":
@@ -146,6 +167,8 @@ function generate_checker_string(name: string, schemata: schemata): string {
         return gen_array_checker(schemata.element);
       case "nullable":
         return gen_nullable_checker(schemata.object);
+      case "optional":
+        return gen_optional_checker(schemata.object);
       default:
         const invalid: never = schemata;
         throw invalid;

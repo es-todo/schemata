@@ -1,6 +1,6 @@
 export type object_type =
   | { type: "email"; data: { user_id: string } }
-  | { type: "user"; data: { email: string } }
+  | { type: "user"; data: { email: string; name: string | undefined } }
   | { type: "credentials"; data: { password: string } }
   | { type: "counter"; data: { count: number } }
   | { type: "user_boards"; data: { list: Array<string> } }
@@ -25,17 +25,23 @@ function parse_0(x: any) {
   }
 }
 
+function parse_3(x: any) {
+  if (x === undefined) return undefined;
+  return parse_1(x);
+}
+
 function parse_2(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       email: parse_1(x.email),
+      name: parse_3(x.name),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_3(x: any) {
+function parse_4(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       password: parse_1(x.password),
@@ -45,7 +51,7 @@ function parse_3(x: any) {
   }
 }
 
-function parse_5(x: any) {
+function parse_6(x: any) {
   if (typeof x === "number") {
     return x;
   } else {
@@ -53,28 +59,10 @@ function parse_5(x: any) {
   }
 }
 
-function parse_4(x: any) {
+function parse_5(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      count: parse_5(x.count),
-    };
-  } else {
-    throw new Error("not a object_type: " + x);
-  }
-}
-
-function parse_7(x: any) {
-  if (Array.isArray(x)) {
-    return x.map(parse_1);
-  } else {
-    throw new Error("not an array: " + x);
-  }
-}
-
-function parse_6(x: any) {
-  if (typeof x === "object" && x !== null) {
-    return {
-      list: parse_7(x.list),
+      count: parse_6(x.count),
     };
   } else {
     throw new Error("not a object_type: " + x);
@@ -82,6 +70,24 @@ function parse_6(x: any) {
 }
 
 function parse_8(x: any) {
+  if (Array.isArray(x)) {
+    return x.map(parse_1);
+  } else {
+    throw new Error("not an array: " + x);
+  }
+}
+
+function parse_7(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      list: parse_8(x.list),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_9(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_1(x.user_id),
@@ -92,15 +98,15 @@ function parse_8(x: any) {
   }
 }
 
-function parse_10(x: any) {
+function parse_11(x: any) {
   if (x === null) return null;
   return parse_1(x);
 }
 
-function parse_9(x: any) {
+function parse_10(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      next: parse_10(x.next),
+      next: parse_11(x.next),
     };
   } else {
     throw new Error("not a object_type: " + x);
@@ -114,15 +120,15 @@ export function parse_object_type(x: any): object_type {
     case "user":
       return { type: "user", data: parse_2(x.data) };
     case "credentials":
-      return { type: "credentials", data: parse_3(x.data) };
+      return { type: "credentials", data: parse_4(x.data) };
     case "counter":
-      return { type: "counter", data: parse_4(x.data) };
+      return { type: "counter", data: parse_5(x.data) };
     case "user_boards":
-      return { type: "user_boards", data: parse_6(x.data) };
+      return { type: "user_boards", data: parse_7(x.data) };
     case "board":
-      return { type: "board", data: parse_8(x.data) };
+      return { type: "board", data: parse_9(x.data) };
     case "users_ll":
-      return { type: "users_ll", data: parse_9(x.data) };
+      return { type: "users_ll", data: parse_10(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }
