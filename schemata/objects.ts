@@ -1,20 +1,16 @@
-import {
-  obj,
-  type schemata,
-  str,
-  num,
-  arr,
-  nullable,
-  optional,
-} from "../src/types.ts";
+import { obj, type schemata, str, num, arr, nullable } from "../src/types.ts";
 
 export const object_type: schemata = {
   email: obj({
     user_id: str,
   }),
+  username: obj({
+    user_id: str,
+  }),
   user: obj({
+    username: str,
     email: str,
-    name: optional(str),
+    realname: nullable(str),
   }),
   credentials: obj({
     password: str,

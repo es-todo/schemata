@@ -1,16 +1,20 @@
-import { obj, type schemata, str } from "../src/types.ts";
+import { nullable, obj, optional, type schemata, str } from "../src/types.ts";
 
 export const command_type: schemata = {
   register: obj({
     user_id: str,
+    username: str,
+    realname: nullable(str),
     email: str,
     password: str,
   }),
-  change_user_name: obj({
-    new_name: str,
+  change_username: obj({
+    new_username: str,
+  }),
+  change_realname: obj({
+    new_realname: nullable(str),
   }),
   change_email: obj({
-    user_id: str,
     new_email: str,
   }),
   ping: obj({}),
