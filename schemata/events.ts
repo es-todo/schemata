@@ -38,7 +38,7 @@ export const event_type: schemata = {
     email: str,
     code: str,
   }),
-  email_message_queued: obj({
+  email_message_enqueued: obj({
     message_id: str,
     email: str,
     content: oneof([

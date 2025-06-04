@@ -33,7 +33,7 @@ export type event_type =
       data: { user_id: string; email: string; code: string };
     }
   | {
-      type: "email_message_queued";
+      type: "email_message_enqueued";
       data: {
         message_id: string;
         email: string;
@@ -316,8 +316,8 @@ export function parse_event_type(x: any): event_type {
         type: "email_confirmation_code_generated",
         data: parse_12(x.data),
       };
-    case "email_message_queued":
-      return { type: "email_message_queued", data: parse_13(x.data) };
+    case "email_message_enqueued":
+      return { type: "email_message_enqueued", data: parse_13(x.data) };
     case "email_message_dequeued":
       return { type: "email_message_dequeued", data: parse_21(x.data) };
     case "user_email_changed":
