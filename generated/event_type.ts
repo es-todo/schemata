@@ -13,7 +13,7 @@ export type event_type =
       type: "user_roles_changed";
       data: {
         user_id: string;
-        roles: Array<"admin" | "automation" | "user-management">;
+        roles: Array<"admin" | "automation" | "profile-management">;
       };
     }
   | {
@@ -80,8 +80,8 @@ function parse_0(x: any) {
 }
 
 function parse_6(x: any) {
-  if (x === "user-management") return x;
-  throw new Error("not a constant_string_user-management:" + x);
+  if (x === "profile-management") return x;
+  throw new Error("not a constant_string_profile-management:" + x);
 }
 
 function parse_7(x: any) {

@@ -7,7 +7,7 @@ export type object_type =
     }
   | {
       type: "user_roles";
-      data: { roles: Array<"admin" | "automation" | "user-management"> };
+      data: { roles: Array<"admin" | "automation" | "profile-management"> };
     }
   | { type: "role_users"; data: { user_ids: Array<string> } }
   | { type: "credentials"; data: { password: string } }
@@ -52,8 +52,8 @@ function parse_2(x: any) {
 }
 
 function parse_7(x: any) {
-  if (x === "user-management") return x;
-  throw new Error("not a constant_string_user-management:" + x);
+  if (x === "profile-management") return x;
+  throw new Error("not a constant_string_profile-management:" + x);
 }
 
 function parse_8(x: any) {
