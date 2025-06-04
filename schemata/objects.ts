@@ -1,4 +1,14 @@
-import { obj, type schemata, str, num, arr, nullable } from "../src/types.ts";
+import {
+  obj,
+  type schemata,
+  str,
+  num,
+  arr,
+  nullable,
+  oneof,
+  c,
+} from "../src/types.ts";
+import { user_roles } from "./user-roles.ts";
 
 export const object_type: schemata = {
   email: obj({
@@ -11,6 +21,12 @@ export const object_type: schemata = {
     username: str,
     email: str,
     realname: nullable(str),
+  }),
+  user_roles: obj({
+    roles: arr(oneof(user_roles.map(c))),
+  }),
+  role_users: obj({
+    user_ids: arr(str),
   }),
   credentials: obj({
     password: str,

@@ -1,4 +1,13 @@
-import { nullable, obj, optional, type schemata, str } from "../src/types.ts";
+import {
+  arr,
+  c,
+  nullable,
+  obj,
+  oneof,
+  type schemata,
+  str,
+} from "../src/types.ts";
+import { user_roles } from "./user-roles.ts";
 
 export const command_type: schemata = {
   register: obj({
@@ -8,6 +17,10 @@ export const command_type: schemata = {
     email: str,
     password: str,
   }),
+  change_user_roles: obj({
+    user_id: str,
+    roles: arr(oneof(user_roles.map(c))),
+  }),
   change_username: obj({
     new_username: str,
   }),
@@ -16,6 +29,9 @@ export const command_type: schemata = {
   }),
   change_email: obj({
     new_email: str,
+  }),
+  dequeue_email_message: obj({
+    message_id: str,
   }),
   ping: obj({}),
   create_board: obj({

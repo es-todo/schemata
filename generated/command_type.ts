@@ -9,9 +9,17 @@ export type command_type =
         password: string;
       };
     }
+  | {
+      type: "change_user_roles";
+      data: {
+        user_id: string;
+        roles: Array<"admin" | "automation" | "user-management">;
+      };
+    }
   | { type: "change_username"; data: { new_username: string } }
   | { type: "change_realname"; data: { new_realname: string | null } }
   | { type: "change_email"; data: { new_email: string } }
+  | { type: "dequeue_email_message"; data: { message_id: string } }
   | { type: "ping"; data: {} }
   | { type: "create_board"; data: { board_id: string; board_name: string } }
   | { type: "rename_board"; data: { board_id: string; board_name: string } };
@@ -43,7 +51,57 @@ function parse_0(x: any) {
   }
 }
 
+function parse_6(x: any) {
+  if (x === "user-management") return x;
+  throw new Error("not a constant_string_user-management:" + x);
+}
+
+function parse_7(x: any) {
+  if (x === "automation") return x;
+  throw new Error("not a constant_string_automation:" + x);
+}
+
+function parse_8(x: any) {
+  if (x === "admin") return x;
+  throw new Error("not a constant_string_admin:" + x);
+}
+
+function parse_5(x: any) {
+  try {
+    return parse_8(x);
+  } catch (_err) {
+    try {
+      return parse_7(x);
+    } catch (_err) {
+      try {
+        return parse_6(x);
+      } catch (_err) {
+        throw new Error("invalid oneof");
+      }
+    }
+  }
+}
+
+function parse_4(x: any) {
+  if (Array.isArray(x)) {
+    return x.map(parse_5);
+  } else {
+    throw new Error("not an array: " + x);
+  }
+}
+
 function parse_3(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      user_id: parse_1(x.user_id),
+      roles: parse_4(x.roles),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_9(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       new_username: parse_1(x.new_username),
@@ -53,7 +111,7 @@ function parse_3(x: any) {
   }
 }
 
-function parse_4(x: any) {
+function parse_10(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       new_realname: parse_2(x.new_realname),
@@ -63,7 +121,7 @@ function parse_4(x: any) {
   }
 }
 
-function parse_5(x: any) {
+function parse_11(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       new_email: parse_1(x.new_email),
@@ -73,7 +131,17 @@ function parse_5(x: any) {
   }
 }
 
-function parse_6(x: any) {
+function parse_12(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      message_id: parse_1(x.message_id),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_13(x: any) {
   if (typeof x === "object" && x !== null) {
     return {};
   } else {
@@ -81,7 +149,7 @@ function parse_6(x: any) {
   }
 }
 
-function parse_7(x: any) {
+function parse_14(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -96,18 +164,22 @@ export function parse_command_type(x: any): command_type {
   switch (x.type) {
     case "register":
       return { type: "register", data: parse_0(x.data) };
+    case "change_user_roles":
+      return { type: "change_user_roles", data: parse_3(x.data) };
     case "change_username":
-      return { type: "change_username", data: parse_3(x.data) };
+      return { type: "change_username", data: parse_9(x.data) };
     case "change_realname":
-      return { type: "change_realname", data: parse_4(x.data) };
+      return { type: "change_realname", data: parse_10(x.data) };
     case "change_email":
-      return { type: "change_email", data: parse_5(x.data) };
+      return { type: "change_email", data: parse_11(x.data) };
+    case "dequeue_email_message":
+      return { type: "dequeue_email_message", data: parse_12(x.data) };
     case "ping":
-      return { type: "ping", data: parse_6(x.data) };
+      return { type: "ping", data: parse_13(x.data) };
     case "create_board":
-      return { type: "create_board", data: parse_7(x.data) };
+      return { type: "create_board", data: parse_14(x.data) };
     case "rename_board":
-      return { type: "rename_board", data: parse_7(x.data) };
+      return { type: "rename_board", data: parse_14(x.data) };
     default:
       throw new Error("not a command_type:" + x);
   }

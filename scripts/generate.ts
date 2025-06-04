@@ -26,6 +26,13 @@ function generate_type_string(name: string, schemata: schemata): string {
         return `(${generate_type(schemata.object)}) | null`;
       case "optional":
         return `(${generate_type(schemata.object)}) | undefined`;
+      case "constant":
+        return JSON.stringify(schemata.constant);
+      case "oneof":
+        return schemata.options
+          .map(generate_type)
+          .map((x) => `(${x})`)
+          .join(" | ");
       default:
         const invalid: never = schemata;
         throw invalid;
@@ -60,6 +67,25 @@ function generate_checker_string(name: string, schemata: schemata): string {
           } else {
             throw new Error("not a ${type}:" + x);
           }
+        }
+      `;
+      checkers[type] = { name: fname, code };
+      return fname;
+    }
+  }
+
+  function gen_constant_checker(constant: string | number) {
+    const type = `constant_${typeof constant}_${constant}`;
+    const x = checkers[type];
+    if (x) {
+      return x.name;
+    } else {
+      const i = counter++;
+      const fname = `parse_${i}`;
+      const code = `
+        function ${fname}(x: any) {
+          if (x === ${JSON.stringify(constant)}) return x;
+          throw new Error("not a ${type}:" + x);
         }
       `;
       checkers[type] = { name: fname, code };
@@ -153,6 +179,33 @@ function generate_checker_string(name: string, schemata: schemata): string {
     }
   }
 
+  function gen_one_of_checker(options: object_schemata[]) {
+    const type = `oneof(${JSON.stringify(options)})`;
+    const x = checkers[type];
+    if (x) {
+      return x.name;
+    } else {
+      const i = counter++;
+      const fname = `parse_${i}`;
+      const body = options.reduceRight<string>((ac, option) => {
+        return `
+          try { 
+            return ${gen_checker(option)}(x);
+          } catch (_err) {
+            ${ac}
+          }
+          `;
+      }, `throw new Error("invalid oneof");`);
+      const code = `
+        function ${fname}(x: any) {
+          ${body}
+        }
+      `;
+      checkers[type] = { name: fname, code };
+      return fname;
+    }
+  }
+
   function gen_checker(schemata: object_schemata): string {
     switch (schemata.type) {
       case "string":
@@ -169,6 +222,10 @@ function generate_checker_string(name: string, schemata: schemata): string {
         return gen_nullable_checker(schemata.object);
       case "optional":
         return gen_optional_checker(schemata.object);
+      case "constant":
+        return gen_constant_checker(schemata.constant);
+      case "oneof":
+        return gen_one_of_checker(schemata.options);
       default:
         const invalid: never = schemata;
         throw invalid;
