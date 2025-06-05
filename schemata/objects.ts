@@ -7,12 +7,15 @@ import {
   nullable,
   oneof,
   c,
+  bool,
 } from "../src/types.ts";
 import { user_roles } from "./user-roles.ts";
 
 export const object_type: schemata = {
+  // key: email
   email: obj({
     user_id: str,
+    confirmed: bool,
   }),
   username: obj({
     user_id: str,
@@ -30,6 +33,28 @@ export const object_type: schemata = {
   }),
   credentials: obj({
     password: str,
+  }),
+  // key: code
+  email_confirmation_code: obj({
+    user_id: str,
+    email: str,
+    received: bool,
+  }),
+  // key: message_id
+  email_message: obj({
+    email: str,
+    user_id: str,
+    content: oneof([
+      obj({ type: c("welcome_email"), code: str }),
+      obj({ type: c("reset_password_email"), code: str }),
+      obj({ type: c("confirm_email_email"), code: str }),
+    ]),
+    status: oneof([c("queued"), c("sent")]),
+  }),
+  // key: message_id | "*"
+  email_message_queue_entry: obj({
+    prev: str,
+    next: str,
   }),
   counter: obj({
     count: num,

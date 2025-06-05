@@ -32,15 +32,17 @@ export type event_type =
       type: "email_confirmation_code_generated";
       data: { user_id: string; email: string; code: string };
     }
+  | { type: "email_confirmation_code_received"; data: { code: string } }
   | {
       type: "email_message_enqueued";
       data: {
         message_id: string;
         email: string;
+        user_id: string;
         content:
-          | { type: "welcome_email" }
-          | { type: "reset_password_email" }
-          | { type: "confirm_email_email" };
+          | { type: "welcome_email"; code: string }
+          | { type: "reset_password_email"; code: string }
+          | { type: "confirm_email_email"; code: string };
       };
     }
   | { type: "email_message_dequeued"; data: { message_id: string } }
@@ -174,73 +176,42 @@ function parse_12(x: any) {
   }
 }
 
-function parse_16(x: any) {
+function parse_13(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      code: parse_1(x.code),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_17(x: any) {
   if (x === "confirm_email_email") return x;
   throw new Error("not a constant_string_confirm_email_email:" + x);
 }
 
-function parse_15(x: any) {
+function parse_16(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      type: parse_16(x.type),
+      type: parse_17(x.type),
+      code: parse_1(x.code),
     };
   } else {
     throw new Error("not a event_type: " + x);
   }
 }
 
-function parse_18(x: any) {
+function parse_19(x: any) {
   if (x === "reset_password_email") return x;
   throw new Error("not a constant_string_reset_password_email:" + x);
 }
 
-function parse_17(x: any) {
+function parse_18(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      type: parse_18(x.type),
-    };
-  } else {
-    throw new Error("not a event_type: " + x);
-  }
-}
-
-function parse_20(x: any) {
-  if (x === "welcome_email") return x;
-  throw new Error("not a constant_string_welcome_email:" + x);
-}
-
-function parse_19(x: any) {
-  if (typeof x === "object" && x !== null) {
-    return {
-      type: parse_20(x.type),
-    };
-  } else {
-    throw new Error("not a event_type: " + x);
-  }
-}
-
-function parse_14(x: any) {
-  try {
-    return parse_19(x);
-  } catch (_err) {
-    try {
-      return parse_17(x);
-    } catch (_err) {
-      try {
-        return parse_15(x);
-      } catch (_err) {
-        throw new Error("invalid oneof");
-      }
-    }
-  }
-}
-
-function parse_13(x: any) {
-  if (typeof x === "object" && x !== null) {
-    return {
-      message_id: parse_1(x.message_id),
-      email: parse_1(x.email),
-      content: parse_14(x.content),
+      type: parse_19(x.type),
+      code: parse_1(x.code),
     };
   } else {
     throw new Error("not a event_type: " + x);
@@ -248,6 +219,51 @@ function parse_13(x: any) {
 }
 
 function parse_21(x: any) {
+  if (x === "welcome_email") return x;
+  throw new Error("not a constant_string_welcome_email:" + x);
+}
+
+function parse_20(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_21(x.type),
+      code: parse_1(x.code),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_15(x: any) {
+  try {
+    return parse_20(x);
+  } catch (_err) {
+    try {
+      return parse_18(x);
+    } catch (_err) {
+      try {
+        return parse_16(x);
+      } catch (_err) {
+        throw new Error("invalid oneof");
+      }
+    }
+  }
+}
+
+function parse_14(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      message_id: parse_1(x.message_id),
+      email: parse_1(x.email),
+      user_id: parse_1(x.user_id),
+      content: parse_15(x.content),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_22(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       message_id: parse_1(x.message_id),
@@ -257,7 +273,7 @@ function parse_21(x: any) {
   }
 }
 
-function parse_22(x: any) {
+function parse_23(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_1(x.user_id),
@@ -268,7 +284,7 @@ function parse_22(x: any) {
   }
 }
 
-function parse_23(x: any) {
+function parse_24(x: any) {
   if (typeof x === "object" && x !== null) {
     return {};
   } else {
@@ -276,7 +292,7 @@ function parse_23(x: any) {
   }
 }
 
-function parse_24(x: any) {
+function parse_25(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -288,7 +304,7 @@ function parse_24(x: any) {
   }
 }
 
-function parse_25(x: any) {
+function parse_26(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -316,18 +332,23 @@ export function parse_event_type(x: any): event_type {
         type: "email_confirmation_code_generated",
         data: parse_12(x.data),
       };
+    case "email_confirmation_code_received":
+      return {
+        type: "email_confirmation_code_received",
+        data: parse_13(x.data),
+      };
     case "email_message_enqueued":
-      return { type: "email_message_enqueued", data: parse_13(x.data) };
+      return { type: "email_message_enqueued", data: parse_14(x.data) };
     case "email_message_dequeued":
-      return { type: "email_message_dequeued", data: parse_21(x.data) };
+      return { type: "email_message_dequeued", data: parse_22(x.data) };
     case "user_email_changed":
-      return { type: "user_email_changed", data: parse_22(x.data) };
+      return { type: "user_email_changed", data: parse_23(x.data) };
     case "ping":
-      return { type: "ping", data: parse_23(x.data) };
+      return { type: "ping", data: parse_24(x.data) };
     case "board_created":
-      return { type: "board_created", data: parse_24(x.data) };
+      return { type: "board_created", data: parse_25(x.data) };
     case "board_renamed":
-      return { type: "board_renamed", data: parse_25(x.data) };
+      return { type: "board_renamed", data: parse_26(x.data) };
     default:
       throw new Error("not a event_type:" + x);
   }

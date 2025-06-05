@@ -38,13 +38,17 @@ export const event_type: schemata = {
     email: str,
     code: str,
   }),
+  email_confirmation_code_received: obj({
+    code: str,
+  }),
   email_message_enqueued: obj({
     message_id: str,
     email: str,
+    user_id: str,
     content: oneof([
-      obj({ type: c("welcome_email") }),
-      obj({ type: c("reset_password_email") }),
-      obj({ type: c("confirm_email_email") }),
+      obj({ type: c("welcome_email"), code: str }),
+      obj({ type: c("reset_password_email"), code: str }),
+      obj({ type: c("confirm_email_email"), code: str }),
     ]),
   }),
   email_message_dequeued: obj({

@@ -1,5 +1,5 @@
 export type object_type =
-  | { type: "email"; data: { user_id: string } }
+  | { type: "email"; data: { user_id: string; confirmed: bool } }
   | { type: "username"; data: { user_id: string } }
   | {
       type: "user";
@@ -11,6 +11,23 @@ export type object_type =
     }
   | { type: "role_users"; data: { user_ids: Array<string> } }
   | { type: "credentials"; data: { password: string } }
+  | {
+      type: "email_confirmation_code";
+      data: { user_id: string; email: string; received: bool };
+    }
+  | {
+      type: "email_message";
+      data: {
+        email: string;
+        user_id: string;
+        content:
+          | { type: "welcome_email"; code: string }
+          | { type: "reset_password_email"; code: string }
+          | { type: "confirm_email_email"; code: string };
+        status: "queued" | "sent";
+      };
+    }
+  | { type: "email_message_queue_entry"; data: { prev: string; next: string } }
   | { type: "counter"; data: { count: number } }
   | { type: "user_boards"; data: { list: Array<string> } }
   | { type: "board"; data: { user_id: string; name: string } }
@@ -24,7 +41,26 @@ function parse_1(x: any) {
   }
 }
 
+function parse_2(x: any) {
+  if (typeof x === "boolean") {
+    return x;
+  } else {
+    throw new Error("not a boolean:" + x);
+  }
+}
+
 function parse_0(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      user_id: parse_1(x.user_id),
+      confirmed: parse_2(x.confirmed),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_3(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_1(x.user_id),
@@ -34,47 +70,47 @@ function parse_0(x: any) {
   }
 }
 
-function parse_3(x: any) {
+function parse_5(x: any) {
   if (x === null) return null;
   return parse_1(x);
 }
 
-function parse_2(x: any) {
+function parse_4(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       username: parse_1(x.username),
       email: parse_1(x.email),
-      realname: parse_3(x.realname),
+      realname: parse_5(x.realname),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_7(x: any) {
+function parse_9(x: any) {
   if (x === "profile-management") return x;
   throw new Error("not a constant_string_profile-management:" + x);
 }
 
-function parse_8(x: any) {
+function parse_10(x: any) {
   if (x === "automation") return x;
   throw new Error("not a constant_string_automation:" + x);
 }
 
-function parse_9(x: any) {
+function parse_11(x: any) {
   if (x === "admin") return x;
   throw new Error("not a constant_string_admin:" + x);
 }
 
-function parse_6(x: any) {
+function parse_8(x: any) {
   try {
-    return parse_9(x);
+    return parse_11(x);
   } catch (_err) {
     try {
-      return parse_8(x);
+      return parse_10(x);
     } catch (_err) {
       try {
-        return parse_7(x);
+        return parse_9(x);
       } catch (_err) {
         throw new Error("invalid oneof");
       }
@@ -82,25 +118,25 @@ function parse_6(x: any) {
   }
 }
 
-function parse_5(x: any) {
+function parse_7(x: any) {
   if (Array.isArray(x)) {
-    return x.map(parse_6);
+    return x.map(parse_8);
   } else {
     throw new Error("not an array: " + x);
   }
 }
 
-function parse_4(x: any) {
+function parse_6(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      roles: parse_5(x.roles),
+      roles: parse_7(x.roles),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_11(x: any) {
+function parse_13(x: any) {
   if (Array.isArray(x)) {
     return x.map(parse_1);
   } else {
@@ -108,17 +144,17 @@ function parse_11(x: any) {
   }
 }
 
-function parse_10(x: any) {
+function parse_12(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      user_ids: parse_11(x.user_ids),
+      user_ids: parse_13(x.user_ids),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_12(x: any) {
+function parse_14(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       password: parse_1(x.password),
@@ -128,7 +164,129 @@ function parse_12(x: any) {
   }
 }
 
-function parse_14(x: any) {
+function parse_15(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      user_id: parse_1(x.user_id),
+      email: parse_1(x.email),
+      received: parse_2(x.received),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_19(x: any) {
+  if (x === "confirm_email_email") return x;
+  throw new Error("not a constant_string_confirm_email_email:" + x);
+}
+
+function parse_18(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_19(x.type),
+      code: parse_1(x.code),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_21(x: any) {
+  if (x === "reset_password_email") return x;
+  throw new Error("not a constant_string_reset_password_email:" + x);
+}
+
+function parse_20(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_21(x.type),
+      code: parse_1(x.code),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_23(x: any) {
+  if (x === "welcome_email") return x;
+  throw new Error("not a constant_string_welcome_email:" + x);
+}
+
+function parse_22(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_23(x.type),
+      code: parse_1(x.code),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_17(x: any) {
+  try {
+    return parse_22(x);
+  } catch (_err) {
+    try {
+      return parse_20(x);
+    } catch (_err) {
+      try {
+        return parse_18(x);
+      } catch (_err) {
+        throw new Error("invalid oneof");
+      }
+    }
+  }
+}
+
+function parse_25(x: any) {
+  if (x === "sent") return x;
+  throw new Error("not a constant_string_sent:" + x);
+}
+
+function parse_26(x: any) {
+  if (x === "queued") return x;
+  throw new Error("not a constant_string_queued:" + x);
+}
+
+function parse_24(x: any) {
+  try {
+    return parse_26(x);
+  } catch (_err) {
+    try {
+      return parse_25(x);
+    } catch (_err) {
+      throw new Error("invalid oneof");
+    }
+  }
+}
+
+function parse_16(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      email: parse_1(x.email),
+      user_id: parse_1(x.user_id),
+      content: parse_17(x.content),
+      status: parse_24(x.status),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_27(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      prev: parse_1(x.prev),
+      next: parse_1(x.next),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_29(x: any) {
   if (typeof x === "number") {
     return x;
   } else {
@@ -136,27 +294,27 @@ function parse_14(x: any) {
   }
 }
 
-function parse_13(x: any) {
+function parse_28(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      count: parse_14(x.count),
+      count: parse_29(x.count),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_15(x: any) {
+function parse_30(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      list: parse_11(x.list),
+      list: parse_13(x.list),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_16(x: any) {
+function parse_31(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_1(x.user_id),
@@ -167,10 +325,10 @@ function parse_16(x: any) {
   }
 }
 
-function parse_17(x: any) {
+function parse_32(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      next: parse_3(x.next),
+      next: parse_5(x.next),
     };
   } else {
     throw new Error("not a object_type: " + x);
@@ -182,23 +340,29 @@ export function parse_object_type(x: any): object_type {
     case "email":
       return { type: "email", data: parse_0(x.data) };
     case "username":
-      return { type: "username", data: parse_0(x.data) };
+      return { type: "username", data: parse_3(x.data) };
     case "user":
-      return { type: "user", data: parse_2(x.data) };
+      return { type: "user", data: parse_4(x.data) };
     case "user_roles":
-      return { type: "user_roles", data: parse_4(x.data) };
+      return { type: "user_roles", data: parse_6(x.data) };
     case "role_users":
-      return { type: "role_users", data: parse_10(x.data) };
+      return { type: "role_users", data: parse_12(x.data) };
     case "credentials":
-      return { type: "credentials", data: parse_12(x.data) };
+      return { type: "credentials", data: parse_14(x.data) };
+    case "email_confirmation_code":
+      return { type: "email_confirmation_code", data: parse_15(x.data) };
+    case "email_message":
+      return { type: "email_message", data: parse_16(x.data) };
+    case "email_message_queue_entry":
+      return { type: "email_message_queue_entry", data: parse_27(x.data) };
     case "counter":
-      return { type: "counter", data: parse_13(x.data) };
+      return { type: "counter", data: parse_28(x.data) };
     case "user_boards":
-      return { type: "user_boards", data: parse_15(x.data) };
+      return { type: "user_boards", data: parse_30(x.data) };
     case "board":
-      return { type: "board", data: parse_16(x.data) };
+      return { type: "board", data: parse_31(x.data) };
     case "users_ll":
-      return { type: "users_ll", data: parse_17(x.data) };
+      return { type: "users_ll", data: parse_32(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }

@@ -30,6 +30,9 @@ export const command_type: schemata = {
   change_email: obj({
     new_email: str,
   }),
+  receive_email_confirmation_code: obj({
+    code: str,
+  }),
   dequeue_email_message: obj({
     message_id: str,
   }),
