@@ -1,5 +1,5 @@
 export type object_type =
-  | { type: "email"; data: { user_id: string; confirmed: bool } }
+  | { type: "email"; data: { user_id: string; confirmed: boolean } }
   | { type: "username"; data: { user_id: string } }
   | {
       type: "user";
@@ -13,7 +13,7 @@ export type object_type =
   | { type: "credentials"; data: { password: string } }
   | {
       type: "email_confirmation_code";
-      data: { user_id: string; email: string; received: bool };
+      data: { user_id: string; email: string; received: boolean };
     }
   | {
       type: "email_message";

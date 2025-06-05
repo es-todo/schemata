@@ -15,7 +15,7 @@ function generate_type_string(name: string, schemata: schemata): string {
       case "number":
         return "number";
       case "boolean":
-        return "bool";
+        return "boolean";
       case "array":
         return `Array<${generate_type(schemata.element)}>`;
       case "object":
