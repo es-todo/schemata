@@ -4,6 +4,7 @@ import {
   nullable,
   obj,
   oneof,
+  optional,
   type schemata,
   str,
 } from "../src/types.ts";
@@ -53,6 +54,10 @@ export const event_type: schemata = {
   }),
   email_message_dequeued: obj({
     message_id: str,
+    status: oneof([
+      obj({ success: c(true) }),
+      obj({ success: c(false), reason: optional(str) }),
+    ]),
   }),
   user_email_changed: obj({
     user_id: str,

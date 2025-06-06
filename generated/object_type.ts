@@ -24,7 +24,10 @@ export type object_type =
           | { type: "welcome_email"; code: string }
           | { type: "reset_password_email"; code: string }
           | { type: "confirm_email_email"; code: string };
-        status: "queued" | "sent";
+        status:
+          | { type: "queued" }
+          | { type: "sent" }
+          | { type: "failed"; reason: string | undefined };
       };
     }
   | { type: "email_message_queue_entry"; data: { prev: string; next: string } }
@@ -240,24 +243,69 @@ function parse_17(x: any) {
   }
 }
 
+function parse_26(x: any) {
+  if (x === "failed") return x;
+  throw new Error("not a constant_string_failed:" + x);
+}
+
+function parse_27(x: any) {
+  if (x === undefined) return undefined;
+  return parse_1(x);
+}
+
 function parse_25(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_26(x.type),
+      reason: parse_27(x.reason),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_29(x: any) {
   if (x === "sent") return x;
   throw new Error("not a constant_string_sent:" + x);
 }
 
-function parse_26(x: any) {
+function parse_28(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_29(x.type),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
+function parse_31(x: any) {
   if (x === "queued") return x;
   throw new Error("not a constant_string_queued:" + x);
 }
 
+function parse_30(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_31(x.type),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
 function parse_24(x: any) {
   try {
-    return parse_26(x);
+    return parse_30(x);
   } catch (_err) {
     try {
-      return parse_25(x);
+      return parse_28(x);
     } catch (_err) {
-      throw new Error("invalid oneof");
+      try {
+        return parse_25(x);
+      } catch (_err) {
+        throw new Error("invalid oneof");
+      }
     }
   }
 }
@@ -275,7 +323,7 @@ function parse_16(x: any) {
   }
 }
 
-function parse_27(x: any) {
+function parse_32(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       prev: parse_1(x.prev),
@@ -286,7 +334,7 @@ function parse_27(x: any) {
   }
 }
 
-function parse_29(x: any) {
+function parse_34(x: any) {
   if (typeof x === "number") {
     return x;
   } else {
@@ -294,17 +342,17 @@ function parse_29(x: any) {
   }
 }
 
-function parse_28(x: any) {
+function parse_33(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      count: parse_29(x.count),
+      count: parse_34(x.count),
     };
   } else {
     throw new Error("not a object_type: " + x);
   }
 }
 
-function parse_30(x: any) {
+function parse_35(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       list: parse_13(x.list),
@@ -314,7 +362,7 @@ function parse_30(x: any) {
   }
 }
 
-function parse_31(x: any) {
+function parse_36(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_1(x.user_id),
@@ -325,7 +373,7 @@ function parse_31(x: any) {
   }
 }
 
-function parse_32(x: any) {
+function parse_37(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       next: parse_5(x.next),
@@ -354,15 +402,15 @@ export function parse_object_type(x: any): object_type {
     case "email_message":
       return { type: "email_message", data: parse_16(x.data) };
     case "email_message_queue_entry":
-      return { type: "email_message_queue_entry", data: parse_27(x.data) };
+      return { type: "email_message_queue_entry", data: parse_32(x.data) };
     case "counter":
-      return { type: "counter", data: parse_28(x.data) };
+      return { type: "counter", data: parse_33(x.data) };
     case "user_boards":
-      return { type: "user_boards", data: parse_30(x.data) };
+      return { type: "user_boards", data: parse_35(x.data) };
     case "board":
-      return { type: "board", data: parse_31(x.data) };
+      return { type: "board", data: parse_36(x.data) };
     case "users_ll":
-      return { type: "users_ll", data: parse_32(x.data) };
+      return { type: "users_ll", data: parse_37(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }

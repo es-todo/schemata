@@ -8,6 +8,7 @@ import {
   oneof,
   c,
   bool,
+  optional,
 } from "../src/types.ts";
 import { user_roles } from "./user-roles.ts";
 
@@ -49,7 +50,11 @@ export const object_type: schemata = {
       obj({ type: c("reset_password_email"), code: str }),
       obj({ type: c("confirm_email_email"), code: str }),
     ]),
-    status: oneof([c("queued"), c("sent")]),
+    status: oneof([
+      obj({ type: c("queued") }),
+      obj({ type: c("sent") }),
+      obj({ type: c("failed"), reason: optional(str) }),
+    ]),
   }),
   // key: message_id | "*"
   email_message_queue_entry: obj({

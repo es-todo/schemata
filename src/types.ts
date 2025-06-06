@@ -2,7 +2,7 @@ export type object_schemata =
   | { type: "number" }
   | { type: "string" }
   | { type: "boolean" }
-  | { type: "constant"; constant: string | number }
+  | { type: "constant"; constant: string | number | boolean }
   | { type: "oneof"; options: object_schemata[] }
   | { type: "nullable"; object: object_schemata }
   | { type: "optional"; object: object_schemata }
@@ -33,7 +33,7 @@ export const optional: (object: object_schemata) => object_schemata = (
   object
 ) => ({ type: "optional", object });
 
-export const c: (constant: string | number) => object_schemata = (
+export const c: (constant: string | number | boolean) => object_schemata = (
   constant
 ) => ({ type: "constant", constant });
 

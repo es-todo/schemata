@@ -20,7 +20,15 @@ export type command_type =
   | { type: "change_realname"; data: { new_realname: string | null } }
   | { type: "change_email"; data: { new_email: string } }
   | { type: "receive_email_confirmation_code"; data: { code: string } }
-  | { type: "dequeue_email_message"; data: { message_id: string } }
+  | {
+      type: "dequeue_email_message";
+      data: {
+        message_id: string;
+        status:
+          | { success: true }
+          | { success: false; reason: string | undefined };
+      };
+    }
   | { type: "ping"; data: {} }
   | { type: "create_board"; data: { board_id: string; board_name: string } }
   | { type: "rename_board"; data: { board_id: string; board_name: string } };
@@ -142,10 +150,36 @@ function parse_12(x: any) {
   }
 }
 
-function parse_13(x: any) {
+function parse_16(x: any) {
+  if (x === false) return x;
+  throw new Error("not a constant_boolean_false:" + x);
+}
+
+function parse_17(x: any) {
+  if (x === undefined) return undefined;
+  return parse_1(x);
+}
+
+function parse_15(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      message_id: parse_1(x.message_id),
+      success: parse_16(x.success),
+      reason: parse_17(x.reason),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_19(x: any) {
+  if (x === true) return x;
+  throw new Error("not a constant_boolean_true:" + x);
+}
+
+function parse_18(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      success: parse_19(x.success),
     };
   } else {
     throw new Error("not a command_type: " + x);
@@ -153,6 +187,29 @@ function parse_13(x: any) {
 }
 
 function parse_14(x: any) {
+  try {
+    return parse_18(x);
+  } catch (_err) {
+    try {
+      return parse_15(x);
+    } catch (_err) {
+      throw new Error("invalid oneof");
+    }
+  }
+}
+
+function parse_13(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      message_id: parse_1(x.message_id),
+      status: parse_14(x.status),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_20(x: any) {
   if (typeof x === "object" && x !== null) {
     return {};
   } else {
@@ -160,7 +217,7 @@ function parse_14(x: any) {
   }
 }
 
-function parse_15(x: any) {
+function parse_21(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -191,11 +248,11 @@ export function parse_command_type(x: any): command_type {
     case "dequeue_email_message":
       return { type: "dequeue_email_message", data: parse_13(x.data) };
     case "ping":
-      return { type: "ping", data: parse_14(x.data) };
+      return { type: "ping", data: parse_20(x.data) };
     case "create_board":
-      return { type: "create_board", data: parse_15(x.data) };
+      return { type: "create_board", data: parse_21(x.data) };
     case "rename_board":
-      return { type: "rename_board", data: parse_15(x.data) };
+      return { type: "rename_board", data: parse_21(x.data) };
     default:
       throw new Error("not a command_type:" + x);
   }

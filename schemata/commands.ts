@@ -4,6 +4,7 @@ import {
   nullable,
   obj,
   oneof,
+  optional,
   type schemata,
   str,
 } from "../src/types.ts";
@@ -35,6 +36,10 @@ export const command_type: schemata = {
   }),
   dequeue_email_message: obj({
     message_id: str,
+    status: oneof([
+      obj({ success: c(true) }),
+      obj({ success: c(false), reason: optional(str) }),
+    ]),
   }),
   ping: obj({}),
   create_board: obj({
