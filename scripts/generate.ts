@@ -74,7 +74,7 @@ function generate_checker_string(name: string, schemata: schemata): string {
     }
   }
 
-  function gen_constant_checker(constant: string | number) {
+  function gen_constant_checker(constant: string | number | boolean) {
     const type = `constant_${typeof constant}_${constant}`;
     const x = checkers[type];
     if (x) {
