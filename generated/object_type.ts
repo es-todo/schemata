@@ -1,6 +1,7 @@
 export type object_type =
   | { type: "email"; data: { user_id: string; confirmed: boolean } }
   | { type: "username"; data: { user_id: string } }
+  | { type: "username_redirect"; data: { user_id: string } }
   | {
       type: "user";
       data: { username: string; email: string; realname: string | null };
@@ -389,6 +390,8 @@ export function parse_object_type(x: any): object_type {
       return { type: "email", data: parse_0(x.data) };
     case "username":
       return { type: "username", data: parse_3(x.data) };
+    case "username_redirect":
+      return { type: "username_redirect", data: parse_3(x.data) };
     case "user":
       return { type: "user", data: parse_4(x.data) };
     case "user_roles":

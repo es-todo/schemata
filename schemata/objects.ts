@@ -21,6 +21,11 @@ export const object_type: schemata = {
   username: obj({
     user_id: str,
   }),
+  // when a user changes their username, we still want to map the old
+  // username to the user, until somebody claims the new username.
+  username_redirect: obj({
+    user_id: str,
+  }),
   user: obj({
     username: str,
     email: str,
