@@ -16,9 +16,18 @@ export type command_type =
         roles: Array<"admin" | "automation" | "profile-management">;
       };
     }
-  | { type: "change_username"; data: { new_username: string } }
-  | { type: "change_realname"; data: { new_realname: string | null } }
-  | { type: "change_email"; data: { new_email: string } }
+  | {
+      type: "change_username";
+      data: { user_id: string | undefined; new_username: string };
+    }
+  | {
+      type: "change_realname";
+      data: { user_id: string | undefined; new_realname: string | null };
+    }
+  | {
+      type: "change_email";
+      data: { user_id: string | undefined; new_email: string };
+    }
   | { type: "receive_email_confirmation_code"; data: { code: string } }
   | {
       type: "dequeue_email_message";
@@ -110,20 +119,16 @@ function parse_3(x: any) {
   }
 }
 
+function parse_10(x: any) {
+  if (x === undefined) return undefined;
+  return parse_1(x);
+}
+
 function parse_9(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
+      user_id: parse_10(x.user_id),
       new_username: parse_1(x.new_username),
-    };
-  } else {
-    throw new Error("not a command_type: " + x);
-  }
-}
-
-function parse_10(x: any) {
-  if (typeof x === "object" && x !== null) {
-    return {
-      new_realname: parse_2(x.new_realname),
     };
   } else {
     throw new Error("not a command_type: " + x);
@@ -133,7 +138,8 @@ function parse_10(x: any) {
 function parse_11(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      new_email: parse_1(x.new_email),
+      user_id: parse_10(x.user_id),
+      new_realname: parse_2(x.new_realname),
     };
   } else {
     throw new Error("not a command_type: " + x);
@@ -143,6 +149,17 @@ function parse_11(x: any) {
 function parse_12(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
+      user_id: parse_10(x.user_id),
+      new_email: parse_1(x.new_email),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_13(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
       code: parse_1(x.code),
     };
   } else {
@@ -150,21 +167,16 @@ function parse_12(x: any) {
   }
 }
 
-function parse_16(x: any) {
+function parse_17(x: any) {
   if (x === false) return x;
   throw new Error("not a constant_boolean_false:" + x);
 }
 
-function parse_17(x: any) {
-  if (x === undefined) return undefined;
-  return parse_1(x);
-}
-
-function parse_15(x: any) {
+function parse_16(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
-      success: parse_16(x.success),
-      reason: parse_17(x.reason),
+      success: parse_17(x.success),
+      reason: parse_10(x.reason),
     };
   } else {
     throw new Error("not a command_type: " + x);
@@ -186,23 +198,23 @@ function parse_18(x: any) {
   }
 }
 
-function parse_14(x: any) {
+function parse_15(x: any) {
   try {
     return parse_18(x);
   } catch (_err) {
     try {
-      return parse_15(x);
+      return parse_16(x);
     } catch (_err) {
       throw new Error("invalid oneof");
     }
   }
 }
 
-function parse_13(x: any) {
+function parse_14(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       message_id: parse_1(x.message_id),
-      status: parse_14(x.status),
+      status: parse_15(x.status),
     };
   } else {
     throw new Error("not a command_type: " + x);
@@ -237,16 +249,16 @@ export function parse_command_type(x: any): command_type {
     case "change_username":
       return { type: "change_username", data: parse_9(x.data) };
     case "change_realname":
-      return { type: "change_realname", data: parse_10(x.data) };
+      return { type: "change_realname", data: parse_11(x.data) };
     case "change_email":
-      return { type: "change_email", data: parse_11(x.data) };
+      return { type: "change_email", data: parse_12(x.data) };
     case "receive_email_confirmation_code":
       return {
         type: "receive_email_confirmation_code",
-        data: parse_12(x.data),
+        data: parse_13(x.data),
       };
     case "dequeue_email_message":
-      return { type: "dequeue_email_message", data: parse_13(x.data) };
+      return { type: "dequeue_email_message", data: parse_14(x.data) };
     case "ping":
       return { type: "ping", data: parse_20(x.data) };
     case "create_board":

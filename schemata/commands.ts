@@ -23,12 +23,15 @@ export const command_type: schemata = {
     roles: arr(oneof(user_roles.map(c))),
   }),
   change_username: obj({
+    user_id: optional(str),
     new_username: str,
   }),
   change_realname: obj({
+    user_id: optional(str),
     new_realname: nullable(str),
   }),
   change_email: obj({
+    user_id: optional(str),
     new_email: str,
   }),
   receive_email_confirmation_code: obj({
