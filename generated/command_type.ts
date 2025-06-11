@@ -38,6 +38,14 @@ export type command_type =
           | { success: false; reason: string | undefined };
       };
     }
+  | {
+      type: "request_password_reset_code";
+      data: { message_id: string; email_or_username: string };
+    }
+  | {
+      type: "reset_password_with_code";
+      data: { code: string; new_password: string };
+    }
   | { type: "ping"; data: {} }
   | { type: "create_board"; data: { board_id: string; board_name: string } }
   | { type: "rename_board"; data: { board_id: string; board_name: string } };
@@ -223,13 +231,35 @@ function parse_14(x: any) {
 
 function parse_20(x: any) {
   if (typeof x === "object" && x !== null) {
-    return {};
+    return {
+      message_id: parse_1(x.message_id),
+      email_or_username: parse_1(x.email_or_username),
+    };
   } else {
     throw new Error("not a command_type: " + x);
   }
 }
 
 function parse_21(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      code: parse_1(x.code),
+      new_password: parse_1(x.new_password),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_22(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {};
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_23(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -259,12 +289,16 @@ export function parse_command_type(x: any): command_type {
       };
     case "dequeue_email_message":
       return { type: "dequeue_email_message", data: parse_14(x.data) };
+    case "request_password_reset_code":
+      return { type: "request_password_reset_code", data: parse_20(x.data) };
+    case "reset_password_with_code":
+      return { type: "reset_password_with_code", data: parse_21(x.data) };
     case "ping":
-      return { type: "ping", data: parse_20(x.data) };
+      return { type: "ping", data: parse_22(x.data) };
     case "create_board":
-      return { type: "create_board", data: parse_21(x.data) };
+      return { type: "create_board", data: parse_23(x.data) };
     case "rename_board":
-      return { type: "rename_board", data: parse_21(x.data) };
+      return { type: "rename_board", data: parse_23(x.data) };
     default:
       throw new Error("not a command_type:" + x);
   }
