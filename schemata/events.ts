@@ -34,6 +34,13 @@ export const event_type: schemata = {
     user_id: str,
     code: str,
   }),
+  password_reset_code_used: obj({
+    code: str,
+  }),
+  user_password_changed: obj({
+    user_id: str,
+    password: str,
+  }),
   email_confirmation_code_generated: obj({
     user_id: str,
     email: str,

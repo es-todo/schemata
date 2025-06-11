@@ -44,6 +44,14 @@ export const command_type: schemata = {
       obj({ success: c(false), reason: optional(str) }),
     ]),
   }),
+  request_password_reset_code: obj({
+    message_id: str, // for tracking on webapp
+    email_or_username: str,
+  }),
+  reset_password_with_code: obj({
+    code: str,
+    new_password: str,
+  }),
   ping: obj({}),
   create_board: obj({
     board_id: str,

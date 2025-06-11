@@ -46,6 +46,11 @@ export const object_type: schemata = {
     email: str,
     received: bool,
   }),
+  // key: code
+  password_reset_code: obj({
+    user_id: str,
+    used: bool,
+  }),
   // key: message_id
   email_message: obj({
     email: str,
@@ -55,6 +60,9 @@ export const object_type: schemata = {
       obj({ type: c("reset_password_email"), code: str }),
       obj({ type: c("confirm_email_email"), code: str }),
     ]),
+  }),
+  // key: message_id
+  email_message_delivery_status: obj({
     status: oneof([
       obj({ type: c("queued") }),
       obj({ type: c("sent") }),
