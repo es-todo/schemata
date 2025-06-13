@@ -10,6 +10,7 @@ import {
   bool,
   optional,
 } from "../src/types.ts";
+import { email_content } from "./email-content.ts";
 import { user_roles } from "./user-roles.ts";
 
 export const object_type: schemata = {
@@ -55,11 +56,7 @@ export const object_type: schemata = {
   email_message: obj({
     email: str,
     user_id: str,
-    content: oneof([
-      obj({ type: c("welcome_email"), code: str }),
-      obj({ type: c("reset_password_email"), code: str }),
-      obj({ type: c("confirm_email_email"), code: str }),
-    ]),
+    content: email_content,
   }),
   // key: message_id
   email_message_delivery_status: obj({
