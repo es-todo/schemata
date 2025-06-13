@@ -28,7 +28,8 @@ export type command_type =
       type: "change_email";
       data: {
         user_id: string | undefined;
-        message_id: string;
+        old_email_message_id: string;
+        new_email_message_id: string;
         new_email: string;
       };
     }
@@ -162,7 +163,8 @@ function parse_12(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_10(x.user_id),
-      message_id: parse_1(x.message_id),
+      old_email_message_id: parse_1(x.old_email_message_id),
+      new_email_message_id: parse_1(x.new_email_message_id),
       new_email: parse_1(x.new_email),
     };
   } else {
