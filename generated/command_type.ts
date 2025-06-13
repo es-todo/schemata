@@ -26,7 +26,11 @@ export type command_type =
     }
   | {
       type: "change_email";
-      data: { user_id: string | undefined; new_email: string };
+      data: {
+        user_id: string | undefined;
+        message_id: string;
+        new_email: string;
+      };
     }
   | { type: "receive_email_confirmation_code"; data: { code: string } }
   | {
@@ -158,6 +162,7 @@ function parse_12(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       user_id: parse_10(x.user_id),
+      message_id: parse_1(x.message_id),
       new_email: parse_1(x.new_email),
     };
   } else {

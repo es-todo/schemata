@@ -32,6 +32,7 @@ export const command_type: schemata = {
   }),
   change_email: obj({
     user_id: optional(str),
+    message_id: str, // to be used for tracking the email message
     new_email: str,
   }),
   receive_email_confirmation_code: obj({
