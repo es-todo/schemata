@@ -61,6 +61,25 @@ export type event_type =
       };
     }
   | { type: "user_email_changed"; data: { user_id: string; new_email: string } }
+  | {
+      type: "user_profile_photo_updated";
+      data: {
+        photo: {
+          photo_id: string;
+          transformations: Array<
+            | { type: "rotate"; angle: number }
+            | {
+                type: "extract";
+                top: number;
+                left: number;
+                width: number;
+                height: number;
+              }
+            | { type: "crop-cover"; width: number; height: number }
+          >;
+        } | null;
+      };
+    }
   | { type: "ping"; data: {} }
   | {
       type: "board_created";
@@ -378,7 +397,117 @@ function parse_32(x: any) {
   }
 }
 
+function parse_39(x: any) {
+  if (x === "crop-cover") return x;
+  throw new Error("not a constant_string_crop-cover:" + x);
+}
+
+function parse_40(x: any) {
+  if (typeof x === "number") {
+    return x;
+  } else {
+    throw new Error("not a number:" + x);
+  }
+}
+
+function parse_38(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_39(x.type),
+      width: parse_40(x.width),
+      height: parse_40(x.height),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_42(x: any) {
+  if (x === "extract") return x;
+  throw new Error("not a constant_string_extract:" + x);
+}
+
+function parse_41(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_42(x.type),
+      top: parse_40(x.top),
+      left: parse_40(x.left),
+      width: parse_40(x.width),
+      height: parse_40(x.height),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_44(x: any) {
+  if (x === "rotate") return x;
+  throw new Error("not a constant_string_rotate:" + x);
+}
+
+function parse_43(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_44(x.type),
+      angle: parse_40(x.angle),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_37(x: any) {
+  try {
+    return parse_43(x);
+  } catch (_err) {
+    try {
+      return parse_41(x);
+    } catch (_err) {
+      try {
+        return parse_38(x);
+      } catch (_err) {
+        throw new Error("invalid oneof");
+      }
+    }
+  }
+}
+
+function parse_36(x: any) {
+  if (Array.isArray(x)) {
+    return x.map(parse_37);
+  } else {
+    throw new Error("not an array: " + x);
+  }
+}
+
+function parse_35(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      photo_id: parse_1(x.photo_id),
+      transformations: parse_36(x.transformations),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_34(x: any) {
+  if (x === null) return null;
+  return parse_35(x);
+}
+
 function parse_33(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      photo: parse_34(x.photo),
+    };
+  } else {
+    throw new Error("not a event_type: " + x);
+  }
+}
+
+function parse_45(x: any) {
   if (typeof x === "object" && x !== null) {
     return {};
   } else {
@@ -386,7 +515,7 @@ function parse_33(x: any) {
   }
 }
 
-function parse_34(x: any) {
+function parse_46(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -398,7 +527,7 @@ function parse_34(x: any) {
   }
 }
 
-function parse_35(x: any) {
+function parse_47(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -441,12 +570,14 @@ export function parse_event_type(x: any): event_type {
       return { type: "email_message_dequeued", data: parse_25(x.data) };
     case "user_email_changed":
       return { type: "user_email_changed", data: parse_32(x.data) };
+    case "user_profile_photo_updated":
+      return { type: "user_profile_photo_updated", data: parse_33(x.data) };
     case "ping":
-      return { type: "ping", data: parse_33(x.data) };
+      return { type: "ping", data: parse_45(x.data) };
     case "board_created":
-      return { type: "board_created", data: parse_34(x.data) };
+      return { type: "board_created", data: parse_46(x.data) };
     case "board_renamed":
-      return { type: "board_renamed", data: parse_35(x.data) };
+      return { type: "board_renamed", data: parse_47(x.data) };
     default:
       throw new Error("not a event_type:" + x);
   }

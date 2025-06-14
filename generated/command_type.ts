@@ -51,6 +51,25 @@ export type command_type =
       type: "reset_password_with_code";
       data: { code: string; new_password: string };
     }
+  | {
+      type: "update_user_profile_photo";
+      data: {
+        photo: {
+          photo_id: string;
+          transformations: Array<
+            | { type: "rotate"; angle: number }
+            | {
+                type: "extract";
+                top: number;
+                left: number;
+                width: number;
+                height: number;
+              }
+            | { type: "crop-cover"; width: number; height: number }
+          >;
+        } | null;
+      };
+    }
   | { type: "ping"; data: {} }
   | { type: "create_board"; data: { board_id: string; board_name: string } }
   | { type: "rename_board"; data: { board_id: string; board_name: string } };
@@ -258,7 +277,117 @@ function parse_21(x: any) {
   }
 }
 
+function parse_28(x: any) {
+  if (x === "crop-cover") return x;
+  throw new Error("not a constant_string_crop-cover:" + x);
+}
+
+function parse_29(x: any) {
+  if (typeof x === "number") {
+    return x;
+  } else {
+    throw new Error("not a number:" + x);
+  }
+}
+
+function parse_27(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_28(x.type),
+      width: parse_29(x.width),
+      height: parse_29(x.height),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_31(x: any) {
+  if (x === "extract") return x;
+  throw new Error("not a constant_string_extract:" + x);
+}
+
+function parse_30(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_31(x.type),
+      top: parse_29(x.top),
+      left: parse_29(x.left),
+      width: parse_29(x.width),
+      height: parse_29(x.height),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_33(x: any) {
+  if (x === "rotate") return x;
+  throw new Error("not a constant_string_rotate:" + x);
+}
+
+function parse_32(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      type: parse_33(x.type),
+      angle: parse_29(x.angle),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_26(x: any) {
+  try {
+    return parse_32(x);
+  } catch (_err) {
+    try {
+      return parse_30(x);
+    } catch (_err) {
+      try {
+        return parse_27(x);
+      } catch (_err) {
+        throw new Error("invalid oneof");
+      }
+    }
+  }
+}
+
+function parse_25(x: any) {
+  if (Array.isArray(x)) {
+    return x.map(parse_26);
+  } else {
+    throw new Error("not an array: " + x);
+  }
+}
+
+function parse_24(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      photo_id: parse_1(x.photo_id),
+      transformations: parse_25(x.transformations),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_23(x: any) {
+  if (x === null) return null;
+  return parse_24(x);
+}
+
 function parse_22(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      photo: parse_23(x.photo),
+    };
+  } else {
+    throw new Error("not a command_type: " + x);
+  }
+}
+
+function parse_34(x: any) {
   if (typeof x === "object" && x !== null) {
     return {};
   } else {
@@ -266,7 +395,7 @@ function parse_22(x: any) {
   }
 }
 
-function parse_23(x: any) {
+function parse_35(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
       board_id: parse_1(x.board_id),
@@ -300,12 +429,14 @@ export function parse_command_type(x: any): command_type {
       return { type: "request_password_reset_code", data: parse_20(x.data) };
     case "reset_password_with_code":
       return { type: "reset_password_with_code", data: parse_21(x.data) };
+    case "update_user_profile_photo":
+      return { type: "update_user_profile_photo", data: parse_22(x.data) };
     case "ping":
-      return { type: "ping", data: parse_22(x.data) };
+      return { type: "ping", data: parse_34(x.data) };
     case "create_board":
-      return { type: "create_board", data: parse_23(x.data) };
+      return { type: "create_board", data: parse_35(x.data) };
     case "rename_board":
-      return { type: "rename_board", data: parse_23(x.data) };
+      return { type: "rename_board", data: parse_35(x.data) };
     default:
       throw new Error("not a command_type:" + x);
   }

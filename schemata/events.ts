@@ -9,6 +9,7 @@ import {
   str,
 } from "../src/types.ts";
 import { email_content } from "./email-content.ts";
+import { photo_property } from "./photo-properly.ts";
 import { user_roles } from "./user-roles.ts";
 
 export const event_type: schemata = {
@@ -66,6 +67,9 @@ export const event_type: schemata = {
   user_email_changed: obj({
     user_id: str,
     new_email: str,
+  }),
+  user_profile_photo_updated: obj({
+    photo: nullable(photo_property),
   }),
   ping: obj({}),
   board_created: obj({

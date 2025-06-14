@@ -11,6 +11,7 @@ import {
   optional,
 } from "../src/types.ts";
 import { email_content } from "./email-content.ts";
+import { photo_property } from "./photo-properly.ts";
 import { user_roles } from "./user-roles.ts";
 
 export const object_type: schemata = {
@@ -31,6 +32,7 @@ export const object_type: schemata = {
     username: str,
     email: str,
     realname: nullable(str),
+    profile_photo: optional(photo_property),
   }),
   user_roles: obj({
     roles: arr(oneof(user_roles.map(c))),

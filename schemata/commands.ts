@@ -8,6 +8,7 @@ import {
   type schemata,
   str,
 } from "../src/types.ts";
+import { photo_property } from "./photo-properly.ts";
 import { user_roles } from "./user-roles.ts";
 
 export const command_type: schemata = {
@@ -53,6 +54,9 @@ export const command_type: schemata = {
   reset_password_with_code: obj({
     code: str,
     new_password: str,
+  }),
+  update_user_profile_photo: obj({
+    photo: nullable(photo_property),
   }),
   ping: obj({}),
   create_board: obj({
