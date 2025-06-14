@@ -56,6 +56,7 @@ export const command_type: schemata = {
     new_password: str,
   }),
   update_user_profile_photo: obj({
+    user_id: optional(str),
     photo: nullable(photo_property),
   }),
   ping: obj({}),

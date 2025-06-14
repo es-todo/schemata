@@ -54,6 +54,7 @@ export type command_type =
   | {
       type: "update_user_profile_photo";
       data: {
+        user_id: string | undefined;
         photo: {
           photo_id: string;
           transformations: Array<
@@ -380,6 +381,7 @@ function parse_23(x: any) {
 function parse_22(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
+      user_id: parse_10(x.user_id),
       photo: parse_23(x.photo),
     };
   } else {
