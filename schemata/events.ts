@@ -69,6 +69,7 @@ export const event_type: schemata = {
     new_email: str,
   }),
   user_profile_photo_updated: obj({
+    user_id: str,
     photo: nullable(photo_property),
   }),
   ping: obj({}),

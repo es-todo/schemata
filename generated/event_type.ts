@@ -64,6 +64,7 @@ export type event_type =
   | {
       type: "user_profile_photo_updated";
       data: {
+        user_id: string;
         photo: {
           photo_id: string;
           transformations: Array<
@@ -500,6 +501,7 @@ function parse_34(x: any) {
 function parse_33(x: any) {
   if (typeof x === "object" && x !== null) {
     return {
+      user_id: parse_1(x.user_id),
       photo: parse_34(x.photo),
     };
   } else {
