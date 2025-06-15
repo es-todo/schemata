@@ -86,4 +86,8 @@ export const object_type: schemata = {
   users_ll: obj({
     next: nullable(str),
   }),
+  users_list: obj({
+    user_ids: arr(str),
+    next: optional(str),
+  }),
 };

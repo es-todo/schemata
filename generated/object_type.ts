@@ -62,7 +62,11 @@ export type object_type =
   | { type: "counter"; data: { count: number } }
   | { type: "user_boards"; data: { list: Array<string> } }
   | { type: "board"; data: { user_id: string; name: string } }
-  | { type: "users_ll"; data: { next: string | null } };
+  | { type: "users_ll"; data: { next: string | null } }
+  | {
+      type: "users_list";
+      data: { user_ids: Array<string>; next: string | undefined };
+    };
 
 function parse_1(x: any) {
   if (typeof x === "string") {
@@ -544,6 +548,17 @@ function parse_51(x: any) {
   }
 }
 
+function parse_52(x: any) {
+  if (typeof x === "object" && x !== null) {
+    return {
+      user_ids: parse_24(x.user_ids),
+      next: parse_42(x.next),
+    };
+  } else {
+    throw new Error("not a object_type: " + x);
+  }
+}
+
 export function parse_object_type(x: any): object_type {
   switch (x.type) {
     case "email":
@@ -578,6 +593,8 @@ export function parse_object_type(x: any): object_type {
       return { type: "board", data: parse_50(x.data) };
     case "users_ll":
       return { type: "users_ll", data: parse_51(x.data) };
+    case "users_list":
+      return { type: "users_list", data: parse_52(x.data) };
     default:
       throw new Error("not a object_type:" + x);
   }
