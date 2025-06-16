@@ -6,7 +6,7 @@ export type command_type =
         username: string;
         realname: string | null;
         email: string;
-        password: string;
+        password: string | null;
       };
     }
   | {
@@ -95,7 +95,7 @@ function parse_0(x: any) {
       username: parse_1(x.username),
       realname: parse_2(x.realname),
       email: parse_1(x.email),
-      password: parse_1(x.password),
+      password: parse_2(x.password),
     };
   } else {
     throw new Error("not a command_type: " + x);

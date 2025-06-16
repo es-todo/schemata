@@ -17,7 +17,7 @@ export const command_type: schemata = {
     username: str,
     realname: nullable(str),
     email: str,
-    password: str,
+    password: nullable(str),
   }),
   change_user_roles: obj({
     user_id: str,

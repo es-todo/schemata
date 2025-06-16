@@ -18,7 +18,7 @@ export const event_type: schemata = {
     username: str,
     realname: nullable(str),
     email: str,
-    password: str,
+    password: nullable(str),
   }),
   user_roles_changed: obj({
     user_id: str,

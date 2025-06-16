@@ -41,7 +41,7 @@ export const object_type: schemata = {
     user_ids: arr(str),
   }),
   credentials: obj({
-    password: str,
+    password: nullable(str),
   }),
   // key: code
   email_confirmation_code: obj({
